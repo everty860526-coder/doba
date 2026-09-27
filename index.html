@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="도배 견적">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <title>도배 견적 계산기</title>
 <style>
 *{box-sizing:border-box}
@@ -201,7 +201,7 @@ installBtn.onclick=async()=>{
  deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBtn.style.display="none";
 };
 window.addEventListener("appinstalled",()=>{installBtn.style.display="none";});
-if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
+if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 </script>
 </body>
 </html>
