@@ -1,207 +1,871 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#202124">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="도배 견적">
-<link rel="manifest" href="manifest.webmanifest">
-<title>도배 견적 계산기</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f3f5f7;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",Arial,sans-serif}
-.container{max-width:620px;margin:0 auto;padding:18px}
-h1{text-align:center;margin:5px 0 18px;font-size:27px}
-.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
-.title{font-size:18px;font-weight:800;margin-bottom:13px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.grid.four{grid-template-columns:repeat(4,1fr)}
-button.opt{border:1px solid #d8dce2;background:#fff;border-radius:12px;padding:13px 5px;font-size:16px;font-weight:700;cursor:pointer}
-button.opt.active{background:#222;color:#fff;border-color:#222}
-.paper{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.paper button{padding:14px 5px}
-.paper small{display:block;font-size:12px;margin-top:4px;font-weight:400}
-.row{display:flex;gap:10px;align-items:center}
-input[type=number]{width:100%;padding:11px;border:1px solid #d5d9df;border-radius:10px;font-size:16px}
-.check{display:flex;align-items:center;gap:9px;margin:10px 0;font-size:16px}
-.check input{width:19px;height:19px}
-.material{border-top:1px solid #eee;margin-top:12px;padding-top:10px}
-.material-title{font-weight:800;margin-bottom:8px}
-.material-row{display:grid;grid-template-columns:1fr 85px 100px;gap:7px;align-items:center;margin:7px 0;font-size:14px}
-.material-row input{padding:8px;font-size:14px}
-.info{font-size:13px;color:#777;margin-top:8px}
-.summary{background:#202124;color:#fff;border-radius:18px;padding:18px}
-.sumline{display:flex;justify-content:space-between;padding:8px 0;color:#e9e9e9}
-.total{border-top:1px solid #555;margin-top:8px;padding-top:15px;display:flex;justify-content:space-between;align-items:center}
-.total strong{font-size:27px}
-.print{width:100%;border:0;border-radius:12px;background:#fff;color:#222;padding:14px;font-size:16px;font-weight:800;margin-top:15px;cursor:pointer}
-.note{font-size:12px;color:#777;line-height:1.5}
-@media(max-width:420px){.grid.four{grid-template-columns:repeat(2,1fr)}.material-row{grid-template-columns:1fr 70px 90px}}
-@media print{body{background:#fff}.container{max-width:none}.print{display:none}.card,.summary{box-shadow:none}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <title>도배 견적 계산기</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      background: #eeeeee;
+    }
+
+    body {
+      margin: 0;
+      background: #eeeeee;
+      color: #111111;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Apple SD Gothic Neo",
+        "Noto Sans KR",
+        "Malgun Gothic",
+        sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    .title {
+      font-size: 38px;
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: -2.8px;
+      margin: 4px 0 26px;
+    }
+
+    .section {
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin-bottom: 16px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .choice-btn {
+      height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: #eeeeee;
+      color: #111111;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .choice-btn.selected {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .wallpaper-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .wallpaper-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      background: #f2f2f2;
+      border-radius: 13px;
+      cursor: pointer;
+    }
+
+    .wallpaper-row.selected {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .wallpaper-main {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .wallpaper-name {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .price {
+      font-size: 13px;
+      opacity: .65;
+      font-weight: 700;
+    }
+
+    .selected .price {
+      opacity: .8;
+    }
+
+    .wallpaper-row input[type="radio"] {
+      display: none;
+    }
+
+    .roll-control {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .roll-input {
+      width: 64px;
+      height: 36px;
+      border: 0;
+      border-radius: 9px;
+      background: #ffffff;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .selected .roll-input {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .roll-label {
+      font-size: 12px;
+      font-weight: 800;
+      opacity: .7;
+    }
+
+    .dropdown-wrap {
+      position: relative;
+    }
+
+    .person-select {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 48px;
+      border: 0;
+      border-bottom: 2px solid #111111;
+      border-radius: 0;
+      background: transparent;
+      padding: 0 34px 0 2px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #111111;
+      outline: none;
+    }
+
+    .person-select.placeholder {
+      color: #777777;
+    }
+
+    .dropdown-arrow {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .ceiling-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .info {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f1f1f1;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .extras {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 14px;
+      border-radius: 12px;
+      background: #f2f2f2;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .check-row input {
+      width: 21px;
+      height: 21px;
+      accent-color: #000000;
+    }
+
+    .estimate {
+      margin-top: 18px;
+      background: #000000;
+      color: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .estimate-header {
+      padding: 22px 20px 8px;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .estimate-body {
+      padding: 10px 20px 20px;
+    }
+
+    .estimate-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 9px 0;
+      color: #dddddd;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .estimate-line span:last-child {
+      color: #ffffff;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 15px;
+      margin-top: 13px;
+      padding-top: 17px;
+      border-top: 1px solid #333333;
+    }
+
+    .total-label {
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .total-price {
+      font-size: 30px;
+      font-weight: 950;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+
+    .print-btn {
+      width: 100%;
+      height: 54px;
+      margin-top: 14px;
+      border: 2px solid #ffffff;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #000000;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .note {
+      margin-top: 9px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #bbbbbb;
+    }
+
+    @media (max-width: 390px) {
+      .app {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .title {
+        font-size: 34px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .buttons {
+        gap: 6px;
+      }
+
+      .choice-btn {
+        font-size: 14px;
+      }
+
+      .wallpaper-row {
+        padding: 11px;
+      }
+
+      .roll-input {
+        width: 56px;
+      }
+
+      .total-price {
+        font-size: 25px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .app {
+        max-width: 760px;
+        padding: 20px;
+      }
+
+      .choice-btn,
+      .wallpaper-row,
+      .check-row,
+      .person-select,
+      .roll-input {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none;
+      }
+
+      .estimate {
+        break-inside: avoid;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
-<h1>도배 견적 계산기</h1>
+  <main class="app">
 
-<div class="card">
-<div class="title">① 평수 선택</div>
-<div class="grid four" id="areaBtns">
-<button class="opt active" data-area="25">25평</button>
-<button class="opt" data-area="33">33평</button>
-<button class="opt" data-area="45">45평</button>
-<button class="opt" data-area="51">51평</button>
-</div>
-</div>
+    <h1 class="title">도배 견적 계산기</h1>
 
-<div class="card">
-<div class="title">② 벽지 종류</div>
-<div class="paper" id="paperBtns">
-<button class="opt active" data-paper="s">소폭<small>15,000원</small></button>
-<button class="opt" data-paper="w">광폭<small>21,500원</small></button>
-<button class="opt" data-paper="i">실크<small>44,000원</small></button>
-</div>
-<div class="info" id="rollInfo"></div>
-<div class="row" style="margin-top:12px">
-<div style="flex:1"><b>롤 수 직접 수정</b></div>
-<div style="width:130px"><input id="rolls" type="number" min="0"></div>
-</div>
+    <!-- ① 평수 -->
+    <section class="section">
+      <div class="card">
+        <div class="section-title">① 평수 선택</div>
 
-<div class="material" id="materialBox" style="display:none">
-<div class="material-title">부자재 비용</div>
-<div class="sumline"><span id="materialLabel">부자재</span><b>100,000원</b></div>
-<div class="note">※ 실크 선택 시 부자재 비용 150,000원이 자동 적용됩니다.</div>
-</div>
-</div>
+        <div class="buttons" id="areaButtons">
+          <button class="choice-btn" data-area="25">25평</button>
+          <button class="choice-btn" data-area="33">33평</button>
+          <button class="choice-btn" data-area="45">45평</button>
+          <button class="choice-btn" data-area="51">51평</button>
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-<div class="title">③ 천장</div>
-<div class="grid">
-<button class="opt active" data-ceil="yes">포함</button>
-<button class="opt" data-ceil="no">제외</button>
-</div>
-</div>
+    <!-- ② 벽지 -->
+    <section class="section">
+      <div class="card">
+        <div class="section-title">② 벽지 종류</div>
 
-<div class="card">
-<div class="title">④ 인원 선택 <span style="font-size:13px;color:#777;font-weight:400"> (1명당 260,000원)</span></div>
-<div class="grid">
-<button class="opt active" data-workers="1">1명</button>
-<button class="opt" data-workers="2">2명</button>
-<button class="opt" data-workers="3">3명</button>
-<button class="opt" data-workers="4">4명</button>
-<button class="opt" data-workers="5">5명</button>
-<button class="opt" data-workers="6">6명</button>
-<button class="opt" data-workers="7">7명</button>
-<button class="opt" data-workers="8">8명</button>
-</div>
-</div>
+        <div class="wallpaper-list">
 
-<div class="card">
-<div class="title">⑤ 부대비용</div>
-<label class="check"><input type="checkbox" id="primer" checked> 초배작업 <span>평당 10,000원</span></label>
-<label class="check"><input type="checkbox" id="meal" checked> 식비 <span>인당 20,000원</span></label>
-<label class="check"><input type="checkbox" id="waste" checked> 폐기물 처리 <span>50,000원</span></label>
-</div>
+          <label class="wallpaper-row" data-wallpaper="small">
+            <div class="wallpaper-main">
+              <input type="radio" name="wallpaper" value="small">
+              <div>
+                <div class="wallpaper-name">소폭</div>
+                <div class="price">15,000원 / 롤</div>
+              </div>
+            </div>
 
-<div class="summary">
-<div class="title">견적 내역</div>
-<div class="sumline"><span>벽지</span><b id="mat">0원</b></div>
-<div id="materialSummary"></div>
-<div class="sumline"><span>인건비</span><b id="labor">0원</b></div>
-<div class="sumline"><span>초배작업</span><b id="primerCost">0원</b></div>
-<div class="sumline"><span>식비</span><b id="mealCost">0원</b></div>
-<div class="sumline"><span>폐기물</span><b id="wasteCost">0원</b></div>
-<div class="total"><span>총 견적금액</span><strong id="total">0원</strong></div>
-<button class="print" id="installBtn" style="display:none;background:#e8eaed;margin-bottom:8px">📱 홈 화면에 추가</button>
-<button class="print" onclick="window.print()">견적서 인쇄 / PDF 저장</button>
-</div>
-</div>
+            <div class="roll-control">
+              <input class="roll-input" id="smallRolls" type="number" min="0">
+              <span class="roll-label">롤</span>
+            </div>
+          </label>
 
-<script>
-const counts={25:{s:38,w:20,i:17},33:{s:48,w:26,i:23},45:{s:65,w:35,i:31},51:{s:80,w:44,i:38}};
-const prices={s:15000,w:21500,i:44000};
-const names={s:"소폭",w:"광폭",i:"실크"};
-let area=25,paper="s",ceil=true,workers=1;
+          <label class="wallpaper-row" data-wallpaper="wide">
+            <div class="wallpaper-main">
+              <input type="radio" name="wallpaper" value="wide">
+              <div>
+                <div class="wallpaper-name">광폭</div>
+                <div class="price">21,500원 / 롤</div>
+              </div>
+            </div>
 
-const won=n=>n.toLocaleString("ko-KR")+"원";
-const rolls=document.getElementById("rolls");
+            <div class="roll-control">
+              <input class="roll-input" id="wideRolls" type="number" min="0">
+              <span class="roll-label">롤</span>
+            </div>
+          </label>
 
-const materialCost=paper==="i"?100000:0;
+          <label class="wallpaper-row" data-wallpaper="silk">
+            <div class="wallpaper-main">
+              <input type="radio" name="wallpaper" value="silk">
+              <div>
+                <div class="wallpaper-name">실크</div>
+                <div class="price">44,000원 / 롤</div>
+              </div>
+            </div>
 
-function setActive(selector,el){
- document.querySelectorAll(selector).forEach(x=>x.classList.remove("active"));
- el.classList.add("active");
-}
+            <div class="roll-control">
+              <input class="roll-input" id="silkRolls" type="number" min="0">
+              <span class="roll-label">롤</span>
+            </div>
+          </label>
 
-function updateRoll(){
- const base=counts[area][paper];
- rolls.value=ceil?base:Math.ceil(base*.82);
- renderMaterials();
- calc();
-}
+        </div>
 
-function renderMaterials(){
- const box=document.getElementById("materialBox");
- box.style.display=paper==="i"?"block":"none";
- document.getElementById("materialLabel").textContent="실크 부자재(네바리·운용지·삼중지·텍스)";
-}
-function getMaterialTotal(){ return paper==="i"?100000:0; }
-function getMaterialLines(){
- if(paper!=="i") return "";
- return `<div class="sumline"><span>실크 부자재</span><b>100,000원</b></div>`;
-}
+        <div class="info" id="silkInfo" style="display:none;">
+          ※ 실크 선택 시 부자재 비용 100,000원이 자동 적용됩니다.
+        </div>
+      </div>
+    </section>
 
-function calc(){
- const r=Number(rolls.value)||0;
- const material=r*prices[paper];
- const sub=getMaterialTotal();
- const labor=workers*260000;
- const primer=document.getElementById("primer").checked?area*10000:0;
- const meal=document.getElementById("meal").checked?workers*20000:0;
- const waste=document.getElementById("waste").checked?50000:0;
- document.getElementById("mat").textContent=won(material);
- document.getElementById("materialSummary").innerHTML=getMaterialLines();
- document.getElementById("labor").textContent=won(labor);
- document.getElementById("primerCost").textContent=won(primer);
- document.getElementById("mealCost").textContent=won(meal);
- document.getElementById("wasteCost").textContent=won(waste);
- document.getElementById("total").textContent=won(material+sub+labor+primer+meal+waste);
- document.getElementById("rollInfo").textContent=
- `${names[paper]} ${won(prices[paper])} × ${r}롤 = ${won(material)}`+
- (paper==="s"?"":" + 부자재 자동계산");
-}
+    <!-- ③ 천장 -->
+    <section class="section">
+      <div class="card">
+        <div class="section-title">③ 천장</div>
 
-document.querySelectorAll("#areaBtns button").forEach(b=>b.onclick=()=>{
- area=Number(b.dataset.area);setActive("#areaBtns button",b);updateRoll();
-});
-document.querySelectorAll("#paperBtns button").forEach(b=>b.onclick=()=>{
- paper=b.dataset.paper;setActive("#paperBtns button",b);updateRoll();
-});
-document.querySelectorAll("[data-ceil]").forEach(b=>b.onclick=()=>{
- ceil=b.dataset.ceil==="yes";setActive("[data-ceil]",b);updateRoll();
-});
-document.querySelectorAll("[data-workers]").forEach(b=>b.onclick=()=>{
- workers=Number(b.dataset.workers);setActive("[data-workers]",b);calc();
-});
-rolls.oninput=calc;
-["primer","meal","waste"].forEach(id=>document.getElementById(id).onchange=calc);
-updateRoll();
+        <div class="ceiling-buttons">
+          <button class="choice-btn selected" data-ceiling="include">
+            포함
+          </button>
 
+          <button class="choice-btn" data-ceiling="exclude">
+            제외
+          </button>
+        </div>
+      </div>
+    </section>
 
-let deferredPrompt=null;
-const installBtn=document.getElementById("installBtn");
-window.addEventListener("beforeinstallprompt",e=>{
- e.preventDefault(); deferredPrompt=e; installBtn.style.display="block";
-});
-installBtn.onclick=async()=>{
- if(!deferredPrompt){alert("브라우저 메뉴에서 '홈 화면에 추가'를 선택해주세요.");return;}
- deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBtn.style.display="none";
-};
-window.addEventListener("appinstalled",()=>{installBtn.style.display="none";});
-if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
-</script>
+    <!-- ④ 인원 -->
+    <section class="section">
+      <div class="card">
+        <div class="section-title">④ 인원 선택</div>
+
+        <div class="dropdown-wrap">
+          <select id="personSelect" class="person-select placeholder">
+            <option value="" selected disabled>인원 수를 선택하세요.</option>
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="5">5명</option>
+            <option value="6">6명</option>
+            <option value="7">7명</option>
+            <option value="8">8명</option>
+          </select>
+
+          <div class="dropdown-arrow">⌄</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 부대비용 -->
+    <section class="section">
+      <div class="card">
+        <div class="section-title">⑤ 부대비용</div>
+
+        <div class="extras">
+
+          <label class="check-row">
+            <span>초배작업</span>
+            <input id="prepCheck" type="checkbox" checked>
+          </label>
+
+          <label class="check-row">
+            <span>식비</span>
+            <input id="mealCheck" type="checkbox" checked>
+          </label>
+
+          <label class="check-row">
+            <span>폐기물 처리</span>
+            <input id="wasteCheck" type="checkbox" checked>
+          </label>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 견적 내역 -->
+    <section class="estimate">
+
+      <div class="estimate-header">
+        견적 내역
+      </div>
+
+      <div class="estimate-body">
+
+        <div class="estimate-line">
+          <span>벽지비</span>
+          <span id="wallpaperCost">0원</span>
+        </div>
+
+        <div class="estimate-line">
+          <span>부자재</span>
+          <span id="materialCost">0원</span>
+        </div>
+
+        <div class="estimate-line">
+          <span>인건비</span>
+          <span id="laborCost">0원</span>
+        </div>
+
+        <div class="estimate-line">
+          <span>초배작업</span>
+          <span id="prepCost">0원</span>
+        </div>
+
+        <div class="estimate-line">
+          <span>식비</span>
+          <span id="mealCost">0원</span>
+        </div>
+
+        <div class="estimate-line">
+          <span>폐기물 처리</span>
+          <span id="wasteCost">0원</span>
+        </div>
+
+        <div class="total">
+          <div class="total-label">총 견적금액</div>
+          <div class="total-price" id="totalCost">0원</div>
+        </div>
+
+        <button class="print-btn" id="printBtn">
+          견적서 인쇄 / PDF 저장
+        </button>
+
+        <div class="note">
+          ※ PDF 저장은 휴대폰의 인쇄 화면에서 'PDF로 저장'을 선택하면 됩니다.
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const PRICE = {
+      small: 15000,
+      wide: 21500,
+      silk: 44000
+    };
+
+    const BASE_ROLLS = {
+      25: {
+        small: 38,
+        wide: 20,
+        silk: 17
+      },
+      33: {
+        small: 48,
+        wide: 26,
+        silk: 23
+      },
+      45: {
+        small: 65,
+        wide: 35,
+        silk: 31
+      },
+      51: {
+        small: 80,
+        wide: 44,
+        silk: 38
+      }
+    };
+
+    const MATERIAL_COST = {
+      small: 0,
+      wide: 0,
+      silk: 100000
+    };
+
+    const LABOR_PER_PERSON = 260000;
+
+    let selectedArea = 25;
+    let selectedWallpaper = "small";
+    let selectedCeiling = "include";
+
+    const money = value =>
+      `${Math.round(value).toLocaleString("ko-KR")}원`;
+
+    function getRollInput(type) {
+      if (type === "small") return document.getElementById("smallRolls");
+      if (type === "wide") return document.getElementById("wideRolls");
+      return document.getElementById("silkRolls");
+    }
+
+    function setDefaultRolls() {
+      document.getElementById("smallRolls").value =
+        BASE_ROLLS[selectedArea].small;
+
+      document.getElementById("wideRolls").value =
+        BASE_ROLLS[selectedArea].wide;
+
+      document.getElementById("silkRolls").value =
+        BASE_ROLLS[selectedArea].silk;
+    }
+
+    function getCurrentRolls() {
+      const input = getRollInput(selectedWallpaper);
+
+      let rolls = Number(input.value);
+
+      if (!Number.isFinite(rolls) || rolls < 0) {
+        rolls = 0;
+      }
+
+      rolls = Math.floor(rolls);
+
+      return rolls;
+    }
+
+    function getAppliedRolls() {
+      const rolls = getCurrentRolls();
+
+      if (selectedCeiling === "exclude") {
+        return Math.ceil(rolls * 0.82);
+      }
+
+      return rolls;
+    }
+
+    function updateAreaUI() {
+      document.querySelectorAll("#areaButtons .choice-btn")
+        .forEach(button => {
+          button.classList.toggle(
+            "selected",
+            Number(button.dataset.area) === selectedArea
+          );
+        });
+    }
+
+    function updateWallpaperUI() {
+      document.querySelectorAll(".wallpaper-row")
+        .forEach(row => {
+          const type = row.dataset.wallpaper;
+          const selected = type === selectedWallpaper;
+
+          row.classList.toggle("selected", selected);
+
+          const radio = row.querySelector("input[type=radio]");
+          radio.checked = selected;
+        });
+
+      document.getElementById("silkInfo").style.display =
+        selectedWallpaper === "silk" ? "block" : "none";
+    }
+
+    function updateCeilingUI() {
+      document.querySelectorAll("[data-ceiling]")
+        .forEach(button => {
+          button.classList.toggle(
+            "selected",
+            button.dataset.ceiling === selectedCeiling
+          );
+        });
+    }
+
+    function updatePersonUI() {
+      const select = document.getElementById("personSelect");
+
+      if (select.value) {
+        select.classList.remove("placeholder");
+      } else {
+        select.classList.add("placeholder");
+      }
+    }
+
+    function calculate() {
+      const personSelect = document.getElementById("personSelect");
+      const people = Number(personSelect.value) || 0;
+
+      const rolls = getAppliedRolls();
+
+      const wallpaperCost =
+        rolls * PRICE[selectedWallpaper];
+
+      const materialCost =
+        MATERIAL_COST[selectedWallpaper];
+
+      const laborCost =
+        people * LABOR_PER_PERSON;
+
+      const prepCost =
+        document.getElementById("prepCheck").checked
+          ? selectedArea * 10000
+          : 0;
+
+      const mealCost =
+        document.getElementById("mealCheck").checked
+          ? people * 20000
+          : 0;
+
+      const wasteCost =
+        document.getElementById("wasteCheck").checked
+          ? 50000
+          : 0;
+
+      const total =
+        wallpaperCost +
+        materialCost +
+        laborCost +
+        prepCost +
+        mealCost +
+        wasteCost;
+
+      document.getElementById("wallpaperCost").textContent =
+        money(wallpaperCost);
+
+      document.getElementById("materialCost").textContent =
+        money(materialCost);
+
+      document.getElementById("laborCost").textContent =
+        money(laborCost);
+
+      document.getElementById("prepCost").textContent =
+        money(prepCost);
+
+      document.getElementById("mealCost").textContent =
+        money(mealCost);
+
+      document.getElementById("wasteCost").textContent =
+        money(wasteCost);
+
+      document.getElementById("totalCost").textContent =
+        money(total);
+    }
+
+    document.querySelectorAll("#areaButtons .choice-btn")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          selectedArea = Number(button.dataset.area);
+
+          setDefaultRolls();
+          updateAreaUI();
+          calculate();
+        });
+      });
+
+    document.querySelectorAll(".wallpaper-row")
+      .forEach(row => {
+        row.addEventListener("click", event => {
+          if (event.target.classList.contains("roll-input")) {
+            return;
+          }
+
+          selectedWallpaper = row.dataset.wallpaper;
+
+          updateWallpaperUI();
+          calculate();
+        });
+      });
+
+    document.querySelectorAll(".roll-input")
+      .forEach(input => {
+        input.addEventListener("input", () => {
+          if (Number(input.value) < 0) {
+            input.value = 0;
+          }
+
+          calculate();
+        });
+      });
+
+    document.querySelectorAll("[data-ceiling]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          selectedCeiling = button.dataset.ceiling;
+
+          updateCeilingUI();
+          calculate();
+        });
+      });
+
+    document.getElementById("personSelect")
+      .addEventListener("change", () => {
+        updatePersonUI();
+        calculate();
+      });
+
+    [
+      "prepCheck",
+      "mealCheck",
+      "wasteCheck"
+    ].forEach(id => {
+      document.getElementById(id)
+        .addEventListener("change", calculate);
+    });
+
+    document.getElementById("printBtn")
+      .addEventListener("click", () => {
+        window.print();
+      });
+
+    // 초기 상태
+    setDefaultRolls();
+    updateAreaUI();
+    updateWallpaperUI();
+    updateCeilingUI();
+    updatePersonUI();
+    calculate();
+
+    // PWA Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .catch(error => {
+            console.log("Service Worker 등록 실패:", error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
